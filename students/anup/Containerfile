@@ -1,0 +1,40 @@
+# 26.01-py3
+FROM nvcr.io/nvidia/pytorch@sha256:38ed2ecb2c16d10677006d73fb0a150855d6ec81db8fc66e800b5ae92741007e
+
+RUN  apt-get update -y \
+       && apt-get install -y --no-install-recommends \
+          git \
+          build-essential \
+          cmake \
+          ninja-build \
+          gcc-12 \
+          g++-12 \
+          python3-pip \
+          && rm -rf /var/lib/apt/lists/*
+
+RUN python -m pip install \
+      'click<8.3' \
+      jupyterlab \
+      'numpy<2' \
+      pillow \
+      psutil \
+      requests \
+      scipy \
+      tqdm
+
+ENV REPO=/workspace/stylegan2-ada-pytorch
+
+RUN curl -L \
+      https://github.com/NVlabs/stylegan2-ada-pytorch/archive/d72cc7d041b42ec8e806021a205ed9349f87c6a4.tar.gz | \
+    tar -xzf - -C /tmp && \
+    mv /tmp/stylegan2-ada-pytorch* "$REPO"
+
+ENV CC=/usr/bin/gcc-12
+ENV CXX=/usr/bin/g++-12
+ENV CUDAHOSTCXX="$CXX"
+ENV DATA=/workspace/StyleGAN_Project/raw_images.zip
+ENV TORCH_EXTENSIONS_DIR=/workspace/torch_extensions
+ENV TORCH_CUDA_ARCH_LIST="12.0+PTX"
+ENV CUDA_MODULE_LOADING=LAZY
+
+# CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser"]
