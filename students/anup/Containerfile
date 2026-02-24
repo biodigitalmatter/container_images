@@ -22,18 +22,17 @@ RUN python -m pip install \
       scipy \
       tqdm
 
-ENV REPO=/workspace/stylegan2-ada-pytorch
+ENV REPO=/usr/src/stylegan2-ada-pytorch
 
-RUN curl -L \
-      https://github.com/NVlabs/stylegan2-ada-pytorch/archive/d72cc7d041b42ec8e806021a205ed9349f87c6a4.tar.gz | \
-    tar -xzf - -C /tmp && \
-    mv /tmp/stylegan2-ada-pytorch* "$REPO"
+COPY stylegan2_and_3.patch /usr/src
+
+RUN git clone https://github.com/NVlabs/stylegan2-ada-pytorch "$REPO" \
+		&& git -C "$REPO" checkout d72cc7d041b42ec8e806021a205ed9349f87c6a4 \
+		&& git -C "$REPO" apply /usr/src/stylegan2_and_3.patch
 
 ENV CC=/usr/bin/gcc-12
 ENV CXX=/usr/bin/g++-12
 ENV CUDAHOSTCXX="$CXX"
-ENV DATA=/workspace/StyleGAN_Project/raw_images.zip
-ENV TORCH_EXTENSIONS_DIR=/workspace/torch_extensions
 ENV TORCH_CUDA_ARCH_LIST="12.0+PTX"
 ENV CUDA_MODULE_LOADING=LAZY
 
