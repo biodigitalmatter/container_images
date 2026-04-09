@@ -12,7 +12,7 @@ jobs:
   build-and-push:
     strategy:
       matrix:
-        image: [students-anup-stylegan students-anup-cyclegan]
+        image: [students-anup-stylegan, students-anup-cyclegan]
     runs-on: ubuntu-latest
 
     permissions:
