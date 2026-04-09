@@ -1,0 +1,44 @@
+# 26.01-py3
+FROM nvcr.io/nvidia/pytorch@sha256:38ed2ecb2c16d10677006d73fb0a150855d6ec81db8fc66e800b5ae92741007e
+
+# copied from ../stylegan to use step
+RUN  apt-get update -y \
+       && apt-get install -y --no-install-recommends \
+          git \
+          build-essential \
+          cmake \
+          ninja-build \
+          gcc-12 \
+          g++-12 \
+          python3-pip \
+          python3-jupyterlab-server \
+          python3-numpy \
+          python3-pil \
+          python3-requests \
+          python3-scipy \
+          python3-tqdm \
+          && rm -rf /var/lib/apt/lists/*
+
+RUN  apt-get update -y \
+       && apt-get install -y --no-install-recommends \
+          python3-dominate \
+          python3-matplotlib \
+          python3-opencv \
+          && rm -rf /var/lib/apt/lists/*
+
+RUN python -m pip install \
+      wandb
+      visdom
+
+ENV REPO=/usr/src/CycleGAN
+
+RUN git clone https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix "$REPO" \
+		&& git -C "$REPO" checkout 2a7afba2895d52556dd5dfe07e8555ef657ced6f
+
+ENV CC=/usr/bin/gcc-12
+ENV CXX=/usr/bin/g++-12
+ENV CUDAHOSTCXX="$CXX"
+ENV TORCH_CUDA_ARCH_LIST="12.0+PTX"
+ENV CUDA_MODULE_LOADING=LAZY
+
+# CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser"]

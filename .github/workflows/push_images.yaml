@@ -12,7 +12,7 @@ jobs:
   build-and-push:
     strategy:
       matrix:
-        image: [students-anup-stylegan]
+        image: [students-anup-stylegan students-anup-cyclegan]
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: ${{ github.repository }}-${{ matrix.image }}
