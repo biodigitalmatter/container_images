@@ -27,7 +27,7 @@ RUN  apt-get update -y \
           && rm -rf /var/lib/apt/lists/*
 
 RUN python -m pip install \
-      wandb
+      wandb \
       visdom
 
 ENV REPO=/usr/src/CycleGAN
