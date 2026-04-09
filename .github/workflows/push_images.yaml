@@ -14,8 +14,6 @@ jobs:
       matrix:
         image: [students-anup-stylegan students-anup-cyclegan]
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: ${{ github.repository }}-${{ matrix.image }}
 
     permissions:
       contents: read
@@ -26,11 +24,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-
-    - name: set image dir
-      run: echo "IMAGE_DIR=${IMAGE//-/\/}" >> "$GITHUB_ENV"
-      env:
-        IMAGE: ${{ matrix.image }}
 
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
@@ -43,10 +36,15 @@ jobs:
       id: meta
       uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.image }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+    - name: set image dir
+      run: echo "IMAGE_DIR=${IMAGE//-/\/}" >> "$GITHUB_ENV"
+      env:
+        IMAGE: ${{ matrix.image }}
 
     - name: Build and push Docker images
       id: push
@@ -62,6 +60,6 @@ jobs:
     - name: Generate artifact attestation
       uses: actions/attest-build-provenance@v3
       with:
-        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        subject-name: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.image }}
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
