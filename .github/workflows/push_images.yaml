@@ -7,7 +7,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BASE_NAME: ${{ github.repository }}-
 
 jobs:
   build-and-push:
@@ -16,7 +15,7 @@ jobs:
         image: [students-anup-stylegan]
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${{ IMAGE_BASE_NAME }}${{ matrix.image }}
+      IMAGE_NAME: ${{ github.repository }}-${{ matrix.image }}
 
     permissions:
       contents: read
