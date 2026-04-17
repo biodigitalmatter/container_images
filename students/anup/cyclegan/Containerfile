@@ -29,6 +29,8 @@ RUN  apt-get update -y \
 # visdom: https://github.com/fossasia/visdom/pull/966
 RUN python -m pip install \
       wandb \
+      jupyter-collaboration \
+      "jupyverse[jupyterlab,auth]" \
       git+https://github.com/Jayantparashar10/visdom@fix/pkg-resources-python312
 
 ENV REPO=/usr/src/CycleGAN
